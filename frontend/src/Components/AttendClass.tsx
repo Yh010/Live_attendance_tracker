@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 const AttendClass = () => {
-  const [msgs, setMsgs] = useState("");
   const wsRef = useRef<WebSocket | null>(null);
+  const [studentCount, setStudentCount] = useState(0);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000/attend");
@@ -16,7 +16,10 @@ const AttendClass = () => {
       if (msg.type === "custom:response") {
         console.log(msg.payload);
       }
-      setMsgs(event.data);
+
+      if (msg.type === "studentCount") {
+        setStudentCount(msg.payload);
+      }
     };
 
     ws.onclose = () => {
@@ -44,9 +47,10 @@ const AttendClass = () => {
       {/* <button className="border px-4 py-2" onClick={ConnectToClass}>
         Attend class
       </button> */}
-      <div>Messages are</div>
-      <div>{msgs}</div>
+      <div>Number of students live are {studentCount}</div>
       <button onClick={sendEvent}>emit event</button>
+
+      <div>List of live students</div>
     </div>
   );
 };

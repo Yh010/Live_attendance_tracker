@@ -26,7 +26,13 @@ export class ConnectionManager{
         this.clients.forEach((client) => {
             if (client.readyState === client.OPEN) {
                 try {
-                    client.send(`No of users are: ${this.getClientCount()} `)
+                    client.send(
+                        JSON.stringify({
+                            type: "studentCount",
+                            payload: this.getClientCount(),
+                        })
+                    )
+
                 } catch (err) {
                     console.log(
                         {
@@ -37,5 +43,9 @@ export class ConnectionManager{
                 }
             }
         })
+    }
+
+    getAllStudents() {
+        
     }
 }

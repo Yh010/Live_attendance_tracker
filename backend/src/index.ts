@@ -35,11 +35,13 @@ wss.on(WSmsg.connection, (ws, req) => {
             case "custom":
                 ws.send(
                     JSON.stringify({
-                    type: "custom:response",
-                    payload: "hey there",
-                })
+                        type: "custom:response",
+                        payload: "hey there",
+                    })
                 );
                 break; 
+            case "createUser":
+                
         }
     })
 });

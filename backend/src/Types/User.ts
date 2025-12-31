@@ -23,4 +23,8 @@ export default class User{
     getEmail() {
         return this.email;
     }
+
+    createUser() {
+        
+    }
 }
