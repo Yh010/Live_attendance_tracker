@@ -13,6 +13,11 @@ export class ConnectionManager{
         console.log(`Client added. Total clients: ${this.clients.size}`);
     }
 
+    removeClient(ws: WebSocket) {
+        this.clients.delete(ws);
+        console.log(`Client removed. Total clients: ${this.clients.size}`);
+    }
+
     getClientCount() {
         return this.clients.size;
     }

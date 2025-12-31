@@ -19,9 +19,14 @@ const connectionManager = new ConnectionManager();
 
 wss.on(WSmsg.connection, (ws, req) => {
     console.log('WS connected on', req.url);
-    ws.send('Welcome to web socket server');
+    //ws.send('Welcome to web socket server');
     connectionManager.addClient(ws);
     connectionManager.broadCastConnectionCount();
+
+    ws.on(WSmsg.close, function () {
+        connectionManager.removeClient(ws);
+        connectionManager.broadCastConnectionCount();
+    })
 });
 
 
