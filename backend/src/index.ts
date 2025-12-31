@@ -27,6 +27,21 @@ wss.on(WSmsg.connection, (ws, req) => {
         connectionManager.removeClient(ws);
         connectionManager.broadCastConnectionCount();
     })
+
+    ws.on(WSmsg.message, function (raw) {
+        const msg = JSON.parse(raw.toString());
+
+        switch (msg.type) {
+            case "custom":
+                ws.send(
+                    JSON.stringify({
+                    type: "custom:response",
+                    payload: "hey there",
+                })
+                );
+                break; 
+        }
+    })
 });
 
 

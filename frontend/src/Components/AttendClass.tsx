@@ -12,6 +12,10 @@ const AttendClass = () => {
     };
 
     ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      if (msg.type === "custom:response") {
+        console.log(msg.payload);
+      }
       setMsgs(event.data);
     };
 
@@ -24,6 +28,16 @@ const AttendClass = () => {
     };
   }, []);
 
+  function sendEvent() {
+    wsRef.current?.send(
+      JSON.stringify({
+        type: "custom",
+        payload: null,
+      })
+    );
+    console.log("data received is");
+  }
+
   return (
     <div>
       {/* for now connect to backend when component mounts, later change this to click of button */}
@@ -32,6 +46,7 @@ const AttendClass = () => {
       </button> */}
       <div>Messages are</div>
       <div>{msgs}</div>
+      <button onClick={sendEvent}>emit event</button>
     </div>
   );
 };
