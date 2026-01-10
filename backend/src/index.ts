@@ -4,7 +4,8 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { WSmsg } from './WebSocket/MessageType.js';
 import { ConnectionManager } from './WebSocket/ConnectionManager.js';
-import ClassRoomManager from './Types/Class.js';
+import ClassRoomManager from './Types/ClassRoomManager.js';
+import UsersManager from './Types/UsersManager.js';
 
 const app = express();
 app.use(cors({
@@ -15,6 +16,7 @@ const port = process.env.PORT || 3000;
 let server = createServer(app);
 
 let activeClassManager = new ClassRoomManager();
+let userManager = new UsersManager();
 
 app.use(express.json());
 let wss = new WebSocketServer({server: server , path: "/attend"});
@@ -58,6 +60,23 @@ app.post("/createnewclass", (req, res) => {
         })
     } catch (error) {
         console.log("error while creating new class", error)
+        res.send({
+            "success": "false",
+            "data": {
+                message: error
+            }
+        })
+    }
+})
+
+app.post('/joinclass', (req, res) => {
+    const { userId, className } = req.body;    
+    //todo: validation/check for whether a student | teacher | guest
+    try {
+        //userManager.getUserRole();
+        
+    } catch (error) {
+        console.log("error while joining class", error)
         res.send({
             "success": "false",
             "data": {

@@ -83,6 +83,29 @@ const AttendClass = () => {
     }
   }
 
+  async function JoinClass() {
+    try {
+      const resp = await fetch(
+        import.meta.env.VITE_BACKEND_URL + "/joinclass",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: "123",
+            className: "Alice",
+          }),
+        }
+      );
+
+      const data = await resp.json();
+      console.log(data);
+    } catch (err) {
+      console.log("error while creating new class", err);
+    }
+  }
+
   return (
     <div>
       {/* for now connect to backend when component mounts, later change this to click of button */}
@@ -103,6 +126,10 @@ const AttendClass = () => {
 
       <button onClick={CreateNewClass} className="border py-px-4">
         Create Class
+      </button>
+
+      <button onClick={JoinClass} className="border py-px-4">
+        Join Class
       </button>
     </div>
   );

@@ -1,31 +1,30 @@
-import { v4 as uuidv4 } from "uuid";
-export default class User{
+export default class Attendee{
     private id: string;
     private name: string;
     private email: string;
-    private role: "student" | "teacher" | "guest";
+    private role: "student" | "teacher";
 
 
-    constructor(name: string, email: string, role: "student" | "teacher" | "guest") {
-        this.id = uuidv4();
+    constructor(id: string, name:string , email: string , role : "student" | "teacher") {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
     }
 
-    getId() {
+    getAttendeeId() {
         return this.id;
     }
 
-    getName() {
+    getAttendeeName() {
         return this.name;
     }
 
-    getEmail() {
+    getAttendeeEmail() {
         return this.email;
     }
 
-    getUserRole() {
+    getAttendeeRole() {
         return this.role;
     }
 }
