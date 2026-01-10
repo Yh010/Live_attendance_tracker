@@ -1,19 +1,19 @@
 import { v4 as uuidv4 } from "uuid";
 import type User from "./User.js";
-export default class ClassRoom{
+export default class ClassRoomManager{
     private id: string;
     private className: string;
     private students: User[];
     //private teacherId: string;
 
 
-    constructor(className: string, students: User[]) {
-        this.id = uuidv4();
-        this.className = className;
-        this.students = students;
+    constructor() {
+        this.id = "";
+        this.className = "";
+        this.students = [];
     }
 
-    getId() {
+    getClassId() {
         return this.id;
     }
 
@@ -23,5 +23,15 @@ export default class ClassRoom{
 
     getstudents() {
         return this.students;
+    }
+
+    createNewClass(className: string) {
+        this.id = uuidv4();
+        this.className = className;
+        this.students = [];
+    }
+
+    addStudent() {
+        
     }
 }
