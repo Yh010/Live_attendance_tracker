@@ -2,14 +2,16 @@ export default class Attendee{
     private id: string;
     private name: string;
     private email: string;
-    private role: "student" | "teacher";
+    private role: "student" | "teacher" | "";
+    private className: string;
 
 
-    constructor(id: string, name:string , email: string , role : "student" | "teacher") {
+    constructor(id: string, name:string , email: string , role : "student" | "teacher" | "", className : string) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.className = className;
     }
 
     getAttendeeId() {
@@ -26,5 +28,8 @@ export default class Attendee{
 
     getAttendeeRole() {
         return this.role;
+    }
+    getAttendeeClassName() {
+        return this.className;
     }
 }

@@ -7,10 +7,19 @@ type GetActiveClassId = {
   };
 };
 
+type AttendeeDTO = {
+  id: string;
+  name: string;
+  email: string;
+  role: "student" | "teacher" | "";
+  className: string;
+};
+
 const AttendClass = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const [studentCount, setStudentCount] = useState(0);
   const [activeClassId, setActiveClassId] = useState("");
+  const [attendees, setAttendees] = useState<AttendeeDTO[]>([]);
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000/attend");
@@ -106,6 +115,18 @@ const AttendClass = () => {
     }
   }
 
+  async function GetActiveAttendees() {
+    try {
+      const resp = await fetch(
+        import.meta.env.VITE_BACKEND_URL + "/getattendees"
+      );
+      const jsonRes = await resp.json();
+      setAttendees(jsonRes.data.attendees);
+    } catch (error) {
+      console.log("error while fetching attendees", error);
+    }
+  }
+
   return (
     <div>
       {/* for now connect to backend when component mounts, later change this to click of button */}
@@ -131,6 +152,19 @@ const AttendClass = () => {
       <button onClick={JoinClass} className="border py-px-4">
         Join Class
       </button>
+
+      <button onClick={GetActiveAttendees} className="border py-px-4">
+        Get all active attendees
+      </button>
+      <ul>
+        {attendees.map((attendee) => (
+          <li key={attendee.id}>
+            <strong>{attendee.name}</strong> — {attendee.role}
+            <br />
+            <small>{attendee.email}</small>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

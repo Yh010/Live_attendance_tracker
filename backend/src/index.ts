@@ -47,6 +47,27 @@ app.get('/getactiveclass', (req, res) => {
     };
 })
 
+app.get('/getattendees', (req, res) => {
+    try {
+        const attendees = activeClassManager.getAttendeesDTO();
+        res.send({
+            "success": "true",
+            "data": {
+                attendees,
+            }
+        })
+        
+    } catch (error) {
+        console.log("error while fetching attendees", error)
+        res.send({
+            "success": "false",
+            "data": {
+                message: error
+            }
+        })
+    }
+})
+
 app.post("/createnewclass", (req, res) => {
     const { className } = req.body;
     try {
@@ -72,8 +93,21 @@ app.post("/createnewclass", (req, res) => {
 app.post('/joinclass', (req, res) => {
     const { userId, className } = req.body;    
     //todo: validation/check for whether a student | teacher | guest
+    //1) get the user details first
+    //2) then add to class
     try {
-        //userManager.getUserRole();
+        const user = userManager.getUserById(userId); 
+        const uId = user?.getId() || "";
+        const uName = user?.getName() || "";
+        const uEmail = user?.getEmail() || "";
+        const uRole = user?.getUserRole() || "";
+        const newAttendee = activeClassManager.addAttendee(uId, uName, uEmail, uRole, className);
+        res.send({
+            "success": "true",
+            "data": {
+                message: `New user added ${newAttendee}`
+            }
+        })
         
     } catch (error) {
         console.log("error while joining class", error)

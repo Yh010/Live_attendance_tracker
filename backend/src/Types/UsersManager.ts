@@ -23,7 +23,7 @@ export default class UsersManager{
         return this.getUserById(userId)?.getUserRole();
     }
 
-    createUser(name: string, email: string, role: "student" | "teacher" | "guest"):User {
+    createUser(name: string, email: string, role: "student" | "teacher" | ""):User {
         const user = new User(name, email, role);
         this.users.push(user);
         return user;

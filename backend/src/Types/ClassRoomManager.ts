@@ -24,6 +24,17 @@ export default class ClassRoomManager{
     getAttendees() {
         return this.attendees;
     }
+
+    getAttendeesDTO() {
+        return this.attendees.map(a => ({
+            id: a.getAttendeeId(),
+            name: a.getAttendeeName(),
+            email: a.getAttendeeEmail(),
+            role: a.getAttendeeRole(),
+            className: a.getAttendeeClassName(),
+        }));
+    }
+
     getStudents(): Attendee[] {
         return this.attendees.filter((attendee) => 
             attendee.getAttendeeRole() === "student"
@@ -42,11 +53,13 @@ export default class ClassRoomManager{
         this.attendees = [];
     }
 
-    addAttendee(id: string, name: string, email: string, role: "student" | "teacher") {
+    addAttendee(id: string, name: string, email: string, role: "student" | "teacher" | "", className : string ) {
         const exists = this.attendees.some(a => a.getAttendeeId() === id)
         if (!exists) {
-            const attendee = new Attendee(id,name, email, role);
-            this.attendees.push(attendee);     
+            const attendee = new Attendee(id,name, email, role,className);
+            this.attendees.push(attendee);
+            return attendee;
         }
+        // return a better object here to indicate if new attendee is added or already present
     }
 }
