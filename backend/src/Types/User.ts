@@ -3,13 +3,15 @@ export default class User{
     private id: string;
     private name: string;
     private email: string;
+    private password: string;
     private role: "student" | "teacher" | "";
 
 
-    constructor(name: string, email: string, role: "student" | "teacher" | "") {
+    constructor(name: string, email: string, password:string, role: "student" | "teacher" | "") {
         this.id = uuidv4();
         this.name = name;
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 
@@ -23,6 +25,9 @@ export default class User{
 
     getEmail() {
         return this.email;
+    }
+    getPassword(){
+        return this.password;
     }
 
     getUserRole() {

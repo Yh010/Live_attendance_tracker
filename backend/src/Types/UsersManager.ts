@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import User from "./User.js";
+import { DBUserModel } from "../Db/index.js";
 export default class UsersManager{
     private users: User[] = [];
 
@@ -23,9 +24,11 @@ export default class UsersManager{
         return this.getUserById(userId)?.getUserRole();
     }
 
-    createUser(name: string, email: string, role: "student" | "teacher" | ""):User {
-        const user = new User(name, email, role);
+    async createUser(name: string, email: string, password:string, role: "student" | "teacher" | ""):Promise<User> {
+        const user = new User(name, email,password, role);
         this.users.push(user);
+        // const yash = new User({ name: 'yash1', email: 'yash1@gmail.com', password: 'yashpwd', role: 'Teacher' })
+        await new DBUserModel({id: user.getId(),name: user.getName(),email: user.getEmail(),password: user.getPassword() , role: user.getUserRole()}).save()
         return user;
     }
 }

@@ -2,6 +2,40 @@ import { useState } from "react";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+
+  async function handleSubmit() {
+    if (mode === "signup") {
+      try {
+        const resp = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "/createnewuser",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              email,
+              password,
+              role,
+            }),
+          }
+        );
+
+        const data = await resp.json();
+        console.log("signup response", data);
+      } catch (err) {
+        console.error("signup failed", err);
+      }
+    } else {
+      // login logic later
+      console.log("login with", email, password);
+    }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
@@ -21,6 +55,8 @@ export default function AuthPage() {
               <input
                 type="text"
                 placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full rounded-xl border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
               />
             )}
@@ -28,16 +64,31 @@ export default function AuthPage() {
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
             />
 
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
             />
 
-            <button className="w-full rounded-xl bg-neutral-900 text-white py-2 text-sm font-medium hover:bg-neutral-800 transition">
+            <input
+              type="role"
+              placeholder="Role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full rounded-xl border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            />
+
+            <button
+              onClick={handleSubmit}
+              className="w-full rounded-xl bg-neutral-900 text-white py-2 text-sm font-medium hover:bg-neutral-800 transition"
+            >
               {mode === "login" ? "Log in" : "Sign up"}
             </button>
           </div>

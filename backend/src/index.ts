@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express, { type Request, type Response } from 'express';
 import cors from "cors";
 import { createServer } from 'http';
@@ -81,6 +83,28 @@ app.post("/createnewclass", (req, res) => {
         })
     } catch (error) {
         console.log("error while creating new class", error)
+        res.send({
+            "success": "false",
+            "data": {
+                message: error
+            }
+        })
+    }
+})
+
+app.post("/createnewuser", async (req, res) => {
+    const { name,email,password,role } = req.body;
+    try {
+        await userManager.createUser(name, email, password, role);
+        console.log("created new user with email", email)
+        res.send({
+            "success": "true",
+            "data": {
+                message: "Created new user"
+            }
+        })
+    } catch (error) {
+        console.log("error while creating new user", error)
         res.send({
             "success": "false",
             "data": {
