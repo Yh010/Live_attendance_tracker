@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import AttendClass from "./Components/AttendClass.tsx";
+import AuthPage from "./Components/AuthPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: "/attend",
     Component: AttendClass,
+  },
+  {
+    path: "/auth",
+    Component: AuthPage,
   },
 ]);
 
