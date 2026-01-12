@@ -24,7 +24,7 @@ app.use(express.json());
 let wss = new WebSocketServer({server: server , path: "/attend"});
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  return res.send('Hello World!');
 });
 
 app.get('/getactiveclass', (req, res) => {
@@ -36,7 +36,7 @@ app.get('/getactiveclass', (req, res) => {
             }
         }
         console.log("/getactiveclass response is", response)
-        res.send(response)
+        return res.send(response)
     } else {
          const response = {
             "success": "true",
@@ -45,14 +45,14 @@ app.get('/getactiveclass', (req, res) => {
             }
         }
         console.log("/getactiveclass response is", response)
-        res.send(response)
+        return res.send(response)
     };
 })
 
 app.get('/getattendees', (req, res) => {
     try {
         const attendees = activeClassManager.getAttendeesDTO();
-        res.send({
+        return res.send({
             "success": "true",
             "data": {
                 attendees,
@@ -61,7 +61,7 @@ app.get('/getattendees', (req, res) => {
         
     } catch (error) {
         console.log("error while fetching attendees", error)
-        res.send({
+        return res.send({
             "success": "false",
             "data": {
                 message: error
@@ -75,7 +75,7 @@ app.post("/createnewclass", (req, res) => {
     try {
         activeClassManager.createNewClass(className);
         console.log("created new class", className)
-        res.send({
+        return res.send({
             "success": "true",
             "data": {
                 message: "Created new class"
@@ -83,7 +83,7 @@ app.post("/createnewclass", (req, res) => {
         })
     } catch (error) {
         console.log("error while creating new class", error)
-        res.send({
+        return res.send({
             "success": "false",
             "data": {
                 message: error
@@ -92,12 +92,12 @@ app.post("/createnewclass", (req, res) => {
     }
 })
 
-app.post("/createnewuser", async (req, res) => {
+app.post("/signup", async (req, res) => {
     const { name,email,password,role } = req.body;
     try {
         await userManager.createUser(name, email, password, role);
         console.log("created new user with email", email)
-        res.send({
+        return res.send({
             "success": "true",
             "data": {
                 message: "Created new user"
@@ -105,7 +105,49 @@ app.post("/createnewuser", async (req, res) => {
         })
     } catch (error) {
         console.log("error while creating new user", error)
-        res.send({
+        return res.send({
+            "success": "false",
+            "data": {
+                message: error
+            }
+        })
+    }
+})
+
+app.post("/login", async (req, res) => {
+    const { email,password } = req.body;
+    try {
+        const user = await userManager.checkUserDB(email, password);
+        if (!user) {
+            console.log(`no user with email ${email} exists in db`);
+            return res.status(404).send({
+                "success": "false",
+                "data": {
+                    message: `no user with email ${email} exists`
+                }
+            })
+
+        }
+        if (password !== user?.password) {
+            console.log("passwords dont match");
+            return res.status(401).send({
+                "success": "false",
+                "data": {
+                    message: `password provided by user does not match`
+                }
+            })
+        }
+
+        console.log("logged in user with email", email)
+        return res.status(200).send({
+            "success": "true",
+            "data": {
+                message: "logged in"
+            }
+        })
+    } catch (error) {
+        console.log("error while logging in user", error)
+        return res.send({
             "success": "false",
             "data": {
                 message: error
@@ -126,7 +168,7 @@ app.post('/joinclass', (req, res) => {
         const uEmail = user?.getEmail() || "";
         const uRole = user?.getUserRole() || "";
         const newAttendee = activeClassManager.addAttendee(uId, uName, uEmail, uRole, className);
-        res.send({
+        return res.send({
             "success": "true",
             "data": {
                 message: `New user added ${newAttendee}`
@@ -135,7 +177,7 @@ app.post('/joinclass', (req, res) => {
         
     } catch (error) {
         console.log("error while joining class", error)
-        res.send({
+        return res.send({
             "success": "false",
             "data": {
                 message: error

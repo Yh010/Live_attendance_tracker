@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
+  const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -10,30 +12,61 @@ export default function AuthPage() {
   async function handleSubmit() {
     if (mode === "signup") {
       try {
-        const resp = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "/createnewuser",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name,
-              email,
-              password,
-              role,
-            }),
-          }
-        );
+        const resp = await fetch(import.meta.env.VITE_BACKEND_URL + "/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            role,
+          }),
+        });
 
         const data = await resp.json();
         console.log("signup response", data);
+        if (!resp.ok || data.success !== "true") {
+          throw new Error(data?.data?.message || "Signup failed");
+        }
+
+        console.log("signup response", data);
+
+        // ✅ redirect after successful signup
+        //navigate("/login"); // or "/dashboard"
+        setMode("login");
       } catch (err) {
         console.error("signup failed", err);
       }
     } else {
       // login logic later
       console.log("login with", email, password);
+      try {
+        const resp = await fetch(import.meta.env.VITE_BACKEND_URL + "/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+
+        const data = await resp.json();
+        console.log("login response", data);
+        if (!resp.ok || data.success !== "true") {
+          throw new Error(data?.data?.message || "Login failed");
+        }
+
+        console.log("login response", data);
+
+        // ✅ redirect after successful signup
+        navigate("/attend"); // or "/dashboard"
+      } catch (err) {
+        console.error("login failed", err);
+      }
     }
   }
 
@@ -77,13 +110,15 @@ export default function AuthPage() {
               className="w-full rounded-xl border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
             />
 
-            <input
-              type="role"
-              placeholder="Role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-xl border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
-            />
+            {mode === "signup" && (
+              <input
+                type="role"
+                placeholder="Role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full rounded-xl border border-neutral-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              />
+            )}
 
             <button
               onClick={handleSubmit}

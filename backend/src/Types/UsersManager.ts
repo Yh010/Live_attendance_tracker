@@ -20,6 +20,11 @@ export default class UsersManager{
         return this.getUserById(userId)?.getEmail();
     }
 
+    async checkUserDB(email:string, password: string) {
+        const user = await DBUserModel.findOne({ email: email });
+        return user; //user | null
+    }
+
     getUserRole(userId: string) {
         return this.getUserById(userId)?.getUserRole();
     }
